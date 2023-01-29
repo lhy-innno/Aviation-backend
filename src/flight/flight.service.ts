@@ -27,7 +27,7 @@ export class FlightService {
     return await this.flightRepository.save(flight);
   }
 
-  // 获取文章列表
+  // 获取航班列表
   async findAll(query): Promise<FlightRo> {
     const qb = await getRepository(FlightEntity).createQueryBuilder('flight');
     qb.where('1 = 1');

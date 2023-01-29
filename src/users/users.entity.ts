@@ -1,4 +1,10 @@
-import { Column, Entity, PrimaryGeneratedColumn, BeforeInsert } from 'typeorm';
+import {
+  Column,
+  Entity,
+  PrimaryGeneratedColumn,
+  BeforeInsert,
+  BeforeUpdate,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
 import * as bcrypt from 'bcryptjs';
 
@@ -30,6 +36,7 @@ export class UsersEntity {
   nationality: string;
 
   @BeforeInsert()
+  @BeforeUpdate()
   async encryptPwd() {
     if (!this.password) return;
     this.password = await bcrypt.hashSync(this.password, 10);

@@ -5,6 +5,9 @@ export class PassengerEntity {
   @PrimaryGeneratedColumn()
   passenger_id: number; // 标记为主列，值自动生成
 
+  @Column()
+  user_id: number;
+
   @Column({ length: 50 })
   email: string;
 

@@ -2,7 +2,8 @@ import { Body, HttpException, Injectable, HttpStatus } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { getRepository, Repository } from 'typeorm';
 import { UsersEntity } from './users.entity';
-import { SignUpDto } from './dto/users.dto';
+import { SignUpDto } from './dto/signup.dto';
+import { UpdateDto } from './dto/update.dto';
 
 export interface UsersRo {
   list: UsersEntity[];
@@ -16,17 +17,17 @@ export class UsersService {
   ) {}
 
   // 创建用户
-  async create(user: Partial<UsersEntity>): Promise<UsersEntity> {
-    const { name } = user;
-    if (!name) {
-      throw new HttpException('缺少用户姓名', 401);
-    }
-    const doc = await this.usersRepository.findOne({ where: { name } });
-    if (doc) {
-      throw new HttpException('用户已存在', 401);
-    }
-    return await this.usersRepository.save(user);
-  }
+  // async create(user: Partial<UsersEntity>): Promise<UsersEntity> {
+  //   const { name } = user;
+  //   if (!name) {
+  //     throw new HttpException('缺少用户姓名', 401);
+  //   }
+  //   const doc = await this.usersRepository.findOne({ where: { name } });
+  //   if (doc) {
+  //     throw new HttpException('用户已存在', 401);
+  //   }
+  //   return await this.usersRepository.save(user);
+  // }
 
   // 注册
   async signUp(user: SignUpDto) {
@@ -72,18 +73,24 @@ export class UsersService {
     return { list: users, count: count };
   }
 
-  // 获取指定文章
+  // 获取指定用户
   async findById(id): Promise<UsersEntity> {
     return await this.usersRepository.findOne(id);
   }
 
   // 更新用户
-  async updateById(id, user): Promise<UsersEntity> {
+  async updateById(id, user: UpdateDto): Promise<UsersEntity> {
     const existUser = await this.usersRepository.findOne(id);
     if (!existUser) {
       throw new HttpException(`id为${id}的用户不存在`, 401);
     }
     const updateUser = this.usersRepository.merge(existUser, user);
+    return this.usersRepository.save(updateUser);
+  }
+
+  async updateInformation(userInfo: UpdateDto, user): Promise<UsersEntity> {
+    const existUser = await this.usersRepository.findOne(user.id);
+    const updateUser = this.usersRepository.merge(existUser, userInfo);
     return this.usersRepository.save(updateUser);
   }
 
